@@ -21,10 +21,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao{
         setDataSource(dataSource);
     }
 
-    @Override
-    public void insert(User user) {
 
-    }
 
     @Override
     public List<User> loadAllUser() {
@@ -36,7 +33,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao{
         for(Map<String, Object> row:rows){
             User user = new User((String)row.get("firstName"),(String)row.get("lastName"),(Integer)row.get("age"),(String)row.get("role"));
             user.setId((Integer)row.get("id"));
-            result.add(user );
+            result.add(user);
         }
 
         return result;

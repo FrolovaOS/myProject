@@ -14,11 +14,13 @@ public class AppService1 implements MessageHandler {
     private User user;
 
     @Autowired
+    private JsonParser jsonParser;
+
+    @Autowired
     private UserDaoImpl userDao;
 
     public void handleMessage(Message<?> message) throws MessagingException {
-        JsonParser users = new JsonParser();
-        this.user = users.getUser(message.getPayload().toString());
+        this.user = jsonParser.getUser(message.getPayload().toString());
         if (user != null) {
             userDao.insert(user);
         }

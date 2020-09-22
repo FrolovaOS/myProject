@@ -29,7 +29,7 @@ public class AppThread extends MessageProducerSupport implements MessageHandler 
 
     private DirectChannel sendStatics;
 
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    private static Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
     private static ConcurrentMap<String,Integer> statics =new ConcurrentHashMap<>(1);
 
@@ -53,12 +53,17 @@ public class AppThread extends MessageProducerSupport implements MessageHandler 
     }
 
 
+    @Scheduled(cron = "*/10 * * * * *")
+    public void interval() {
+        timestamp = new Timestamp(System.currentTimeMillis());
+    }
+
 
     @Bean
     public void sendStatics(){ sendStatics = new DirectChannel();}
 
 
-    @Scheduled(fixedDelay = 100000)
+    @Scheduled(fixedDelay = 10000)
     public void showStatics(){
         executor.execute(() -> {
 
@@ -75,7 +80,6 @@ public class AppThread extends MessageProducerSupport implements MessageHandler 
                 sendStatics.send(message);
             }
             statics.clear();
-            timestamp = new Timestamp(System.currentTimeMillis());
         });
     }
     @Bean

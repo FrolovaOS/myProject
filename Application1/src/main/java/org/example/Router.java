@@ -35,7 +35,7 @@ public class Router {
                 .from(Kafka.messageDrivenChannelAdapter( new DefaultKafkaConsumerFactory<>(properties.getProperties().buildConsumerProperties()),properties.getInputtopic()))
                 .handle(service)
                 .handle(appThread)
-                .filter(Message.class, m ->m.getHeaders().get("sending")=="1")
+                .filter(Message.class, m ->(m.getHeaders().get("sending")).equals("1"))
                 .handle(Kafka.outboundChannelAdapter(new DefaultKafkaProducerFactory<>(properties.getProperties().buildProducerProperties())).topic(properties.getUsertopic()))
                 .get();
     }

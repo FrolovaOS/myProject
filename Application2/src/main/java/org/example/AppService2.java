@@ -16,9 +16,11 @@ public class AppService2 implements MessageHandler {
     @Autowired
     private UserDaoImpl userDao;
 
+    @Autowired
+    private JsonParser jsonParser;
+
     public void handleMessage(Message<?> message) throws MessagingException {
-        JsonParser users = new JsonParser();
-        this.user = users.getUser(message.getPayload().toString());
+        this.user = jsonParser.getUser(message.getPayload().toString());
         if (user != null) {
             userDao.insertStatics(user);
         }

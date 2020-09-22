@@ -37,23 +37,4 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao{
                 user.getId(),user.getCount(),user.getTimestamp()
         });
     }
-    @Override
-    public List<User> loadAllCustomer() {
-        String sql = "SELECT * FROM info";
-
-        List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql);
-
-        List<User> result = new ArrayList<User>();
-        for(Map<String, Object> row:rows){
-            User user = new User();
-            user.setId((Integer)row.get("id"));
-            user.setFirstName((String)row.get("firstName"));
-            user .setLastName((String) row.get("lastName"));
-            user.setAge((Integer)row.get("age"));
-            user.setRole((String)row.get("role"));
-            result.add(user );
-        }
-
-        return result;
-    }
 }
