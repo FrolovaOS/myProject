@@ -1,0 +1,14 @@
+dependencies:
+- name: cp-kafka
+  version: 0.1.0
+  repository: file://./charts/cp-kafka
+  condition: cp-kafka.enabled
+- name: cp-zookeeper
+  version: 0.1.0
+  repository: file://./charts/cp-zookeeper
+  condition: cp-zookeeper.enabled
+- name: helm-postgresql-master
+  version: 0.2.0
+  repository: file://./charts/helm-postgresql-master
+  condition: helm-postgresql-master.enabled
+

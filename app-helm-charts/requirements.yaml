@@ -1,0 +1,11 @@
+dependencies:
+- name: app-helm-chart
+  version: 0.1.0
+  repository: file://./charts/app-helm-chart
+  condition: app-helm-chart.enabled
+- name: app-helm-chart-db
+  version: 0.1.0
+  repository: file://./charts/app-helm-chart-db
+  condition: app-helm-chart-db.enabled
+
+
