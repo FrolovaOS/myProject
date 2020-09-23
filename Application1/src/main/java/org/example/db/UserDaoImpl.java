@@ -6,9 +6,10 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Repository
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao{
@@ -22,20 +23,19 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao{
     }
 
 
-
     @Override
-    public List<User> loadAllUser() {
+    public ConcurrentMap<Integer,User> loadAllUser() {
         String sql = "SELECT * FROM info";
+
+        ConcurrentMap<Integer,User> users =new ConcurrentHashMap<>(1);//убрала статик перепроверить
 
         List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql);
 
-        List<User> result = new ArrayList<User>();
         for(Map<String, Object> row:rows){
             User user = new User((String)row.get("firstName"),(String)row.get("lastName"),(Integer)row.get("age"),(String)row.get("role"));
-            user.setId((Integer)row.get("id"));
-            result.add(user);
+            users.put((Integer)row.get("id"),user);
         }
 
-        return result;
+        return users;
     }
 }

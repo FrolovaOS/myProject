@@ -2,9 +2,10 @@ package org.example.db;
 
 import org.example.User;
 
-import java.util.List;
+
+import java.util.concurrent.ConcurrentMap;
 
 public interface UserDao {
-    List<User> loadAllUser();
+    ConcurrentMap<Integer,User> loadAllUser();
 
 }

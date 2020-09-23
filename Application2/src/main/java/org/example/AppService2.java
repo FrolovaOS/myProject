@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AppService2 implements MessageHandler {
-    private User user;
+
+    private Counter count;
 
     @Autowired
     private UserDaoImpl userDao;
@@ -20,9 +21,9 @@ public class AppService2 implements MessageHandler {
     private JsonParser jsonParser;
 
     public void handleMessage(Message<?> message) throws MessagingException {
-        this.user = jsonParser.getUser(message.getPayload().toString());
-        if (user != null) {
-            userDao.insertStatics(user);
+        this.count = jsonParser.getCounter(message.getPayload().toString());
+        if (count != null) {
+            userDao.insertStatics(count);
         }
     }
 }

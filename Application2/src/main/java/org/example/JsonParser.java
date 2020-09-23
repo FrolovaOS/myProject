@@ -28,6 +28,21 @@ public class JsonParser {
         }
         return  user;
     }
-
+    public Counter getCounter(String key) {
+        Counter count = null;
+        try {
+            count = objectMapper.readValue(key, Counter.class);
+        } catch (NullPointerException e) {
+            log = Logger.getLogger(JsonParser.class.getName());
+            log.info("Invalid dataa");
+            log.info(e.getMessage());
+        }
+        catch( JsonProcessingException u){
+            log = Logger.getLogger(JsonParser.class.getName());
+            log.info("Invalid dataa");
+            log.info(u.getMessage());
+        }
+        return  count;
+    }
 
 }

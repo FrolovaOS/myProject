@@ -1,14 +1,12 @@
 package org.example.db;
 
+import org.example.Counter;
 import org.example.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao{
@@ -30,11 +28,11 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao{
         });
     }
 
-    public void insertStatics(User user) {
+    public void insertStatics(Counter count) {
         String sql = "INSERT INTO statics " +
-                "(idU,count,timestamp) VALUES ( ?, ?, ?)" ;
+                "(idU,count,startinterval) VALUES ( ?, ?, ?)" ;
         getJdbcTemplate().update(sql, new Object[]{
-                user.getId(),user.getCount(),user.getTimestamp()
+                count.getId(),count.getCount(),count.getStartinterval()
         });
     }
 }

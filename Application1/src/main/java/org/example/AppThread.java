@@ -1,5 +1,7 @@
 package org.example;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +10,6 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
-import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.kafka.dsl.Kafka;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.messaging.Message;
@@ -25,22 +26,21 @@ import java.util.concurrent.*;
 @Configuration
 @EnableIntegration
 @EnableAutoConfiguration
-public class AppThread extends MessageProducerSupport implements MessageHandler {
+public class AppThread  implements MessageHandler {
 
     private DirectChannel sendStatics;
 
-    private static Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    private static ConcurrentMap<String,Integer> statics =new ConcurrentHashMap<>(1);
+    private Timestamp startinterval = new Timestamp(System.currentTimeMillis());
+
+    private static ConcurrentMap<Integer,Integer> statics =new ConcurrentHashMap<>(1);
 
     @Autowired
     private ConfigProperties properties;
 
     @Autowired
     private ThreadPoolTaskExecutor executor;
-
-    @Autowired
-    private JsonParser jsonParser;
 
     @Bean
     public ThreadPoolTaskExecutor initExecutor(){
@@ -52,29 +52,27 @@ public class AppThread extends MessageProducerSupport implements MessageHandler 
         return executor;
     }
 
-
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void interval() {
-        timestamp = new Timestamp(System.currentTimeMillis());
+        startinterval = new Timestamp(System.currentTimeMillis());
     }
-
 
     @Bean
     public void sendStatics(){ sendStatics = new DirectChannel();}
 
-
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(cron = "* */2 * * * *")
     public void showStatics(){
         executor.execute(() -> {
-
-            for(Map.Entry<String,Integer> entry : statics.entrySet())
+            for(Map.Entry<Integer,Integer> entry : statics.entrySet())
             {
-                User user =jsonParser.getUser(entry.getKey());
+                Counter count = new Counter(entry.getKey(),entry.getValue(),startinterval.getTime());
 
-                user.setTimestamp(timestamp.getTime());
-                user.setCount(entry.getValue());
-
-                String info =jsonParser.getJson(user);
+                String info = null;
+                try {
+                    info = objectMapper.writeValueAsString(count);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
 
                 Message message = MessageBuilder.withPayload(info).build();
                 sendStatics.send(message);
@@ -82,6 +80,7 @@ public class AppThread extends MessageProducerSupport implements MessageHandler 
             statics.clear();
         });
     }
+
     @Bean
     public IntegrationFlow staticsToKafka() {
         return IntegrationFlows
@@ -90,13 +89,11 @@ public class AppThread extends MessageProducerSupport implements MessageHandler 
                 .get();
     }
 
-
-
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
-        User user =jsonParser.getUser(message.getPayload().toString());
-        String record = jsonParser.getJson(user);
-        Integer oldValue=statics.get(record);
+
+        Integer record = Integer.parseInt(message.getPayload().toString());
+          Integer oldValue=statics.get(record);
 
         if(oldValue!=null)
         {
@@ -104,6 +101,5 @@ public class AppThread extends MessageProducerSupport implements MessageHandler 
         }
         else statics.put(record,1);
 
-        sendMessage(message);
     }
 }
