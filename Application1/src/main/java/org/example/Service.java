@@ -53,7 +53,7 @@ public class Service extends MessageProducerSupport implements MessageHandler {
 
 
     @Bean
-    public IntegrationFlow UserToKafka() {
+    public IntegrationFlow userToKafka() {
     return IntegrationFlows
             .from(sendUser)
             .handle(Kafka.outboundChannelAdapter(new DefaultKafkaProducerFactory<>(properties.getProperties().buildProducerProperties())).topic(properties.getUsertopic()))
@@ -78,10 +78,9 @@ public class Service extends MessageProducerSupport implements MessageHandler {
         else {
             id=users.size()+1;
             users.put(id,user);
-            user.setId(id);
 
-            Message User = MessageBuilder.withPayload(jsonParser.getJson(user)).setHeader(KafkaHeaders.TOPIC, properties.getUsertopic()).build();
-            sendUser.send(User);
+            Message uniqUser = MessageBuilder.withPayload(jsonParser.getJson(user)).setHeader(KafkaHeaders.TOPIC, properties.getUsertopic()).setHeader("idUser",id).build();
+            sendUser.send(uniqUser);
 
             msgForStatics = MessageBuilder.withPayload(id).setHeader(KafkaHeaders.TOPIC, properties.getUsertopic()).build();
         }

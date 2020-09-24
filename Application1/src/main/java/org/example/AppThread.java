@@ -52,7 +52,7 @@ public class AppThread  implements MessageHandler {
         return executor;
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "* */2 * * * *")
     public void interval() {
         startinterval = new Timestamp(System.currentTimeMillis());
     }
@@ -74,8 +74,8 @@ public class AppThread  implements MessageHandler {
                     e.printStackTrace();
                 }
 
-                Message message = MessageBuilder.withPayload(info).build();
-                sendStatics.send(message);
+                Message record = MessageBuilder.withPayload(info).build();
+                sendStatics.send(record);
             }
             statics.clear();
         });
@@ -92,14 +92,14 @@ public class AppThread  implements MessageHandler {
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
 
-        Integer record = Integer.parseInt(message.getPayload().toString());
-          Integer oldValue=statics.get(record);
+        Integer id = Integer.parseInt(message.getPayload().toString());
+        Integer oldValue=statics.get(id);
 
         if(oldValue!=null)
         {
-            statics.replace(record,oldValue+1);
+            statics.replace(id,oldValue+1);
         }
-        else statics.put(record,1);
+        else statics.put(id,1);
 
     }
 }

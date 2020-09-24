@@ -31,9 +31,9 @@ public class JsonParser {
     }
 
     public String getJson(User user){
-        String  message = null;
+        String  json = null;
         try {
-            message = objectMapper.writeValueAsString(user);
+            json = objectMapper.writeValueAsString(user);
         }catch (NullPointerException e) {
             log = Logger.getLogger(JsonParser.class.getName());
             log.info("Invalid data");
@@ -45,6 +45,6 @@ public class JsonParser {
             log.info("Invalid data");
             log.info(u.getMessage());
         }
-        return message;
+        return json;
     }
 }

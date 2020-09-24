@@ -20,11 +20,11 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao{
     }
 
     @Override
-    public void insert(User user) {
+    public void insert(User user,Integer id) {
         String sql = "INSERT INTO info " +
                 "(id,firstName, lastName ,age,role) VALUES ( ?, ?, ?, ?,?)";
         getJdbcTemplate().update(sql, new Object[]{
-                user.getId(), user.getFirstName(), user.getLastName(), user.getAge(), user.getRole()
+                id, user.getFirstName(), user.getLastName(), user.getAge(), user.getRole()
         });
     }
 

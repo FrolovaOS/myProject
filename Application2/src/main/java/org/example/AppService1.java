@@ -22,7 +22,7 @@ public class AppService1 implements MessageHandler {
     public void handleMessage(Message<?> message) throws MessagingException {
         this.user = jsonParser.getUser(message.getPayload().toString());
         if (user != null) {
-            userDao.insert(user);
+            userDao.insert(user, Integer.parseInt(message.getHeaders().get("idUser").toString()));
         }
     }
 }
