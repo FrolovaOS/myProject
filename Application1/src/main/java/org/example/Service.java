@@ -19,13 +19,13 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.MessageBuilder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 @Configuration
 @EnableIntegration
 @EnableAutoConfiguration
 public class Service extends MessageProducerSupport implements MessageHandler {
 
-    private User user;
 
     private static ConcurrentMap<Integer, User> users;
 
@@ -61,8 +61,9 @@ public class Service extends MessageProducerSupport implements MessageHandler {
     }
 
 
+    @Override
     public void handleMessage(Message<?> message) throws MessagingException {
-        this.user = jsonParser.getUser(message.getPayload().toString());
+        User user = jsonParser.getUser(message.getPayload().toString());
 
         Message msgForStatics = null;
         if(users.containsValue(user)) {

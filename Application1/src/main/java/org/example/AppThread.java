@@ -22,6 +22,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.logging.Logger;
 
 @Configuration
 @EnableIntegration
@@ -62,6 +63,8 @@ public class AppThread  implements MessageHandler {
 
     @Scheduled(cron = "* */2 * * * *")
     public void showStatics(){
+        Logger log;
+        log = Logger.getLogger(AppThread.class.getName());
         executor.execute(() -> {
             for(Map.Entry<Integer,Integer> entry : statics.entrySet())
             {
@@ -72,6 +75,8 @@ public class AppThread  implements MessageHandler {
                     info = objectMapper.writeValueAsString(count);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
+                    log.info("Invalid data");
+                    log.info(e.getMessage());
                 }
 
                 Message record = MessageBuilder.withPayload(info).build();
@@ -92,7 +97,7 @@ public class AppThread  implements MessageHandler {
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
 
-        Integer id = Integer.parseInt(message.getPayload().toString());
+        Integer id =  (Integer) message.getPayload();
         Integer oldValue=statics.get(id);
 
         if(oldValue!=null)

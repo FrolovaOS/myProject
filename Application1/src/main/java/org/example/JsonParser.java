@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JsonParser {
 
-    private static Logger log;
+    private static Logger log = Logger.getLogger(JsonParser.class.getName());;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -18,12 +18,10 @@ public class JsonParser {
         try {
             user = objectMapper.readValue(response, User.class);
         } catch (NullPointerException e) {
-            log = Logger.getLogger(JsonParser.class.getName());
             log.info("Invalid dataa");
             log.info(e.getMessage());
         }
         catch( JsonProcessingException u){
-            log = Logger.getLogger(JsonParser.class.getName());
             log.info("Invalid dataa");
             log.info(u.getMessage());
         }
@@ -35,13 +33,11 @@ public class JsonParser {
         try {
             json = objectMapper.writeValueAsString(user);
         }catch (NullPointerException e) {
-            log = Logger.getLogger(JsonParser.class.getName());
             log.info("Invalid data");
             log.info(e.getMessage());
 
         }
         catch( JsonProcessingException u){
-            log = Logger.getLogger(JsonParser.class.getName());
             log.info("Invalid data");
             log.info(u.getMessage());
         }

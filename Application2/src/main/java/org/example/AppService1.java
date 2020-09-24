@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AppService1 implements MessageHandler {
-    private User user;
 
     @Autowired
     private JsonParser jsonParser;
@@ -20,9 +19,9 @@ public class AppService1 implements MessageHandler {
     private UserDaoImpl userDao;
 
     public void handleMessage(Message<?> message) throws MessagingException {
-        this.user = jsonParser.getUser(message.getPayload().toString());
+        User user = jsonParser.getUser(message.getPayload().toString());
         if (user != null) {
-            userDao.insert(user, Integer.parseInt(message.getHeaders().get("idUser").toString()));
+            userDao.insert(user, (Integer)message.getHeaders().get("idUser"));
         }
     }
 }
