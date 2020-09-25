@@ -80,7 +80,7 @@ public class Service extends MessageProducerSupport implements MessageHandler {
             id=users.size()+1;
             users.put(id,user);
 
-            Message uniqUser = MessageBuilder.withPayload(jsonParser.getJson(user)).setHeader(KafkaHeaders.TOPIC, properties.getUsertopic()).setHeader("idUser",id).build();
+            Message uniqUser = MessageBuilder.withPayload(jsonParser.getJson(user)).setHeader(KafkaHeaders.TOPIC, properties.getUsertopic()).setHeader(KafkaHeaders.MESSAGE_KEY,id.toString()).build();
             sendUser.send(uniqUser);
 
             msgForStatics = MessageBuilder.withPayload(id).setHeader(KafkaHeaders.TOPIC, properties.getUsertopic()).build();
