@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "topics.inputtopic",
+      "type": "java.lang.String",
+      "description": "Description for topics.inputtopic."
+    },
+    {
+      "name": "topics.usertopic",
+      "type": "java.lang.String",
+      "description": "Description for topics.usertopic."
+    },
+    {
+      "name": "topics.staticstopic",
+      "type": "java.lang.String",
+      "description": "Description for topics.staticstopic."
+    }
+
+  ] }
